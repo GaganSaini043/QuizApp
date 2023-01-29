@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -23,6 +24,10 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
     private var mSelectedOptionPosition: Int = 0
     private var mUserName : String? = null
     private var mCorrectAnswers : Int = 0
+    private var mQuizType : Int  = 0
+
+    @BindView(R.id.scrollView)
+    lateinit var scrollView : ScrollView
 
     @BindView(R.id.progress_bar)
     @JvmField
@@ -67,7 +72,27 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         ButterKnife.bind(this)
 
         mUserName = intent.getStringExtra(Constants.USER_NAME)
-        mQuestionList = Constants.getQuestions()
+
+        mQuizType = intent.getIntExtra(Constants.QUIZ_TYPE,1)
+
+        when(mQuizType){
+            1 ->{
+                mQuestionList = Constants.getQuestions()
+                scrollView.background = ContextCompat.getDrawable(this,R.drawable.rainbow1)
+            }
+            2 ->{
+                mQuestionList = ConstantsFruits.getQuestions()
+                scrollView.background = ContextCompat.getDrawable(this,R.drawable.rainbow2)
+            }
+            3 ->{
+                mQuestionList = ConstantsAnimals.getQuestions()
+                scrollView.background = ContextCompat.getDrawable(this,R.drawable.rainbow1)
+            }
+            4 ->{
+                mQuestionList = ConstantsNumbers.getQuestions()
+                scrollView.background = ContextCompat.getDrawable(this,R.drawable.rainbow2)
+            }
+        }
         setQuestion()
 
     }
@@ -98,6 +123,11 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun defaultOptionView() {
+
+        tvOption1?.isClickable = true
+        tvOption2?.isClickable = true
+        tvOption3?.isClickable = true
+        tvOption4?.isClickable = true
 
         val options = ArrayList<TextView>()
         tvOption1?.let {
@@ -153,6 +183,11 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             R.id.btn_submit -> {
+                tvOption1?.isClickable = false
+                tvOption2?.isClickable = false
+                tvOption3?.isClickable = false
+                tvOption4?.isClickable = false
+
                 if (mSelectedOptionPosition == 0) {
                     mCurrentPosition++
                     when {
